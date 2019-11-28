@@ -84,5 +84,4 @@ public class Calculator {
 		}
 		return Double.parseDouble(terms.get(0));
 	}
-	
 }
