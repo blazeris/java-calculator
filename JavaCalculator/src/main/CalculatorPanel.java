@@ -3,6 +3,7 @@ package main;
 import java.awt.Button;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -12,9 +13,12 @@ public class CalculatorPanel extends JPanel{
 	GridBagLayout gridbag;
 	GridBagConstraints c;
 	List<String> terms;
+	Calculator calc;
 	
-	public CalculatorPanel(List<String> terms) {
+	public CalculatorPanel() {
 		super();
+		terms = new LinkedList<String>();
+		calc = new Calculator(terms);
 		gridbag = new GridBagLayout();
 		c = new GridBagConstraints();
 		setLayout(gridbag);
