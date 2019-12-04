@@ -10,6 +10,10 @@ public class Calculator {
 		this.terms = terms;
 	}
 	
+	public Calculator() {
+		this(new LinkedList<String>());
+	}
+	
 	public <E> int reverseIndexOf(List<E> list, E target) {
 		for(int i = list.size() - 1, k = 0; i >= 0; i--, k++) {
 			if(list.get(i).equals(target)) {
@@ -27,10 +31,18 @@ public class Calculator {
 		return Double.toString(Double.parseDouble(firstTerm) + Double.parseDouble(secondTerm));
 	}
 	
+	public String toString() {
+		StringBuffer output = new StringBuffer();
+		for(String term: terms) {
+			output = output.append(term).append(" ");
+		}
+		return output.toString().trim();
+	}
+	
 	public double calculate() {
 		return calculate(terms);
 	}
-	
+
 	private double calculate(List<String> terms) {
 		int open = terms.indexOf("(");
 		
@@ -83,5 +95,9 @@ public class Calculator {
 			subtractIndex = terms.indexOf("-");
 		}
 		return Double.parseDouble(terms.get(0));
+	}
+	
+	public void termsAdd(String term) {
+		terms.add(term);
 	}
 }

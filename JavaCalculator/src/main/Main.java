@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 public class Main {
 
@@ -16,7 +17,12 @@ public class Main {
 		window.setSize(600, 600);
 		JPanel panel = new JPanel(new GridBagLayout());
 		GridBagConstraints constraints = new GridBagConstraints();
+		window.add(panel);
+		window.setVisible(true);
 		
+		
+		
+		JTextField display = new JTextField();
 		List<String> terms = new LinkedList<String>();
 		terms.add("5");
 		terms.add("*");
@@ -27,6 +33,6 @@ public class Main {
 		terms.add(")");
 		Calculator calc = new Calculator(terms);
 		System.out.println(calc.calculate());
+		
 	}
-
 }
