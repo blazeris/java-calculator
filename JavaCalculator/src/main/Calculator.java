@@ -3,6 +3,11 @@ package main;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * A class to perform calculations
+ * @author Nathan Lai nlai274@gmail.com
+ *
+ */
 public class Calculator {
 	List<String> terms;
 	
@@ -14,6 +19,13 @@ public class Calculator {
 		this(new LinkedList<String>());
 	}
 	
+	/**
+	 * Index of method, but going from right to left
+	 * @param <E> is the element type
+	 * @param list is list we're looking in
+	 * @param target is the target value
+	 * @return the index from right to left
+	 */
 	public <E> int reverseIndexOf(List<E> list, E target) {
 		for(int i = list.size() - 1, k = 0; i >= 0; i--, k++) {
 			if(list.get(i).equals(target)) {
@@ -23,14 +35,29 @@ public class Calculator {
 		return -1;
 	}
 	
+	/**
+	 * Basic multiplication
+	 * @param firstTerm
+	 * @param secondTerm
+	 * @return the product
+	 */
 	private String multiply(String firstTerm, String secondTerm) {
 		return Double.toString(Double.parseDouble(firstTerm) * Double.parseDouble(secondTerm));
 	}
 	
+	/**
+	 * Basic addition
+	 * @param firstTerm
+	 * @param secondTerm
+	 * @return the sum
+	 */
 	private String add(String firstTerm, String secondTerm) {
 		return Double.toString(Double.parseDouble(firstTerm) + Double.parseDouble(secondTerm));
 	}
 	
+	/**
+	 * @return the String form of terms list
+	 */
 	public String toString() {
 		StringBuffer output = new StringBuffer();
 		for(String term: terms) {
@@ -39,10 +66,19 @@ public class Calculator {
 		return output.toString().trim();
 	}
 	
+	/**
+	 * The calculator method
+	 * @return the outcome of the math in terms
+	 */
 	public double calculate() {
 		return calculate(terms);
 	}
 
+	/**
+	 * Recursive helper method for calculating from terms
+	 * @param terms the list storing operators and operands
+	 * @return the outcome of the math in the terms list
+	 */
 	private double calculate(List<String> terms) {
 		int open = terms.indexOf("(");
 		
