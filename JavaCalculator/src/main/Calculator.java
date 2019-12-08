@@ -12,11 +12,49 @@ public class Calculator {
 	List<String> terms;
 	
 	public Calculator(List<String> terms) {
-		this.terms = terms;
+		this.terms = new LinkedList<String>();
+		update(terms);
 	}
 	
 	public Calculator() {
 		this(new LinkedList<String>());
+	}
+	
+	/**
+	 * Checks if a string is part of a number
+	 * @param target the string checked
+	 * @return true if is part of number, false if not part of a number
+	 */
+	public boolean isNumeric(String target) {
+		if(target.equals(".")) {
+			return true;
+		}
+		try {
+			Double.parseDouble(target);
+			return true;
+		}
+		catch(Exception e) {
+			return false;
+		}
+	}
+	
+	/**
+	 * Updates the terms list
+	 * @param inp the new list
+	 */
+	public void update(List<String> inp) {
+		terms.clear();
+		terms.addAll(inp);
+		
+		for(int i = 1; i < terms.size();) {
+			if(isNumeric(terms.get(i)) && isNumeric(terms.get(i - 1))) {
+				terms.set(i - 1, terms.get(i - 1) + terms.get(i));
+				terms.remove(i);
+			}
+			else {
+				i++;
+			}
+		}
 	}
 	
 	/**
@@ -80,57 +118,56 @@ public class Calculator {
 	 * @return the outcome of the math in the terms list
 	 */
 	private double calculate(List<String> terms) {
-		int open = terms.indexOf("(");
-		
-		if(open != -1) {
-			int closed = terms.indexOf(")");
-			if(closed == -1) {
-				closed = terms.size() - 1;
+		if (!terms.isEmpty()) {
+			int open = terms.indexOf("(");
+			if (open != -1) {
+				int closed = terms.indexOf(")");
+				if (closed == -1) {
+					closed = terms.size() - 1;
+				} else {
+					terms.remove(closed);
+				}
+				List<String> termsSublist = new LinkedList<>();
+				for (int i = open + 1; i < closed; i++) {
+					termsSublist.add(terms.get(open + 1));
+					terms.remove(open + 1);
+				}
+				terms.set(open, Double.toString(calculate(termsSublist)));
+
 			}
-			else {
-				terms.remove(closed);
+
+			int multiplyIndex = terms.indexOf("*");
+			int divideIndex = terms.indexOf("/");
+			while (multiplyIndex != -1 || divideIndex != -1) {
+				if (divideIndex != -1) {
+					terms.set(divideIndex, "*");
+					terms.set(divideIndex + 1, Double.toString(1 / Double.parseDouble(terms.get(divideIndex + 1))));
+				} else if (multiplyIndex != -1) {
+					terms.set(multiplyIndex, multiply(terms.get(multiplyIndex - 1), terms.get(multiplyIndex + 1)));
+					terms.remove(multiplyIndex + 1);
+					terms.remove(multiplyIndex - 1);
+				}
+				multiplyIndex = terms.indexOf("*");
+				divideIndex = terms.indexOf("/");
 			}
-			List<String> termsSublist = new LinkedList<>();
-			for(int i = open + 1; i < closed; i++) {
-				termsSublist.add(terms.get(open + 1));
-				terms.remove(open + 1);
+
+			int addIndex = terms.indexOf("+");
+			int subtractIndex = terms.indexOf("-");
+			while (addIndex != -1 || subtractIndex != -1) {
+				if (subtractIndex != -1) {
+					terms.set(subtractIndex, "+");
+					terms.set(subtractIndex + 1, Double.toString(-Double.parseDouble(terms.get(subtractIndex + 1))));
+				} else if (addIndex != -1) {
+					terms.set(addIndex, add(terms.get(addIndex - 1), terms.get(addIndex + 1)));
+					terms.remove(addIndex + 1);
+					terms.remove(addIndex - 1);
+				}
+				addIndex = terms.indexOf("+");
+				subtractIndex = terms.indexOf("-");
 			}
-			terms.set(open, Double.toString(calculate(termsSublist)));
-			
+			return Double.parseDouble(terms.get(0));
 		}
-		
-		int multiplyIndex = terms.indexOf("*");
-		int divideIndex = terms.indexOf("/");
-		while(multiplyIndex != -1 || divideIndex != -1) {
-			if(divideIndex != - 1) {
-				terms.set(divideIndex, "*");
-				terms.set(divideIndex + 1, Double.toString(1 / Double.parseDouble(terms.get(divideIndex + 1))));
-			}
-			else if(multiplyIndex != -1) {
-				terms.set(multiplyIndex, multiply(terms.get(multiplyIndex - 1), terms.get(multiplyIndex + 1)));
-				terms.remove(multiplyIndex + 1);
-				terms.remove(multiplyIndex - 1);
-			}
-			multiplyIndex = terms.indexOf("*");
-			divideIndex = terms.indexOf("/");
-		}
-		
-		int addIndex = terms.indexOf("+");
-		int subtractIndex = terms.indexOf("-");
-		while(addIndex != -1 || subtractIndex != -1) {
-			if(subtractIndex != - 1) {
-				terms.set(subtractIndex, "+");
-				terms.set(subtractIndex + 1, Double.toString(- Double.parseDouble(terms.get(subtractIndex + 1))));
-			}
-			else if(addIndex != -1) {
-				terms.set(addIndex, add(terms.get(addIndex - 1), terms.get(addIndex + 1)));
-				terms.remove(addIndex + 1);
-				terms.remove(addIndex - 1);
-			}
-			addIndex = terms.indexOf("+");
-			subtractIndex = terms.indexOf("-");
-		}
-		return Double.parseDouble(terms.get(0));
+		return 0;
 	}
 	
 	public void termsAdd(String term) {

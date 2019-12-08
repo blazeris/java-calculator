@@ -1,6 +1,7 @@
 package main;
 
 import java.awt.Button;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -17,11 +18,14 @@ import javax.swing.JTextArea;
  *
  */
 public class CalculatorPanel extends JPanel{
-	GridBagLayout gridbag;
-	GridBagConstraints c;
-	List<String> terms;
-	Calculator calc;
-	JTextArea answerText;
+	private GridBagLayout gridbag;
+	private GridBagConstraints c;
+	private List<String> terms;
+	private Calculator calc;
+	private JTextArea answerText;
+	private JTextArea output;
+	
+	public final static Font CALCULATOR_FONT = new Font("Verdana", Font.PLAIN, 20);
 	
 	/**
 	 * Initializes a new panel that works as a calculator
@@ -41,9 +45,10 @@ public class CalculatorPanel extends JPanel{
 		
 		c.gridwidth = GridBagConstraints.REMAINDER - 1;
 		c.gridy = 0;
-		JTextArea output = new JTextArea();
+		output = new JTextArea();
 		gridbag.setConstraints(output, c);
 		output.setEditable(false);
+		output.setFont(CALCULATOR_FONT);
 		add(output);
 		
 		c.gridwidth = 1;
@@ -51,8 +56,10 @@ public class CalculatorPanel extends JPanel{
 		gridbag.setConstraints(answerText, c);
 		answerText.setEditable(false);
 		answerText.append("=");
+		answerText.setFont(CALCULATOR_FONT);
 		add(answerText);
 		
+		c.gridy = 1;
 		makeButton("(");
 		makeButton(")");
 		makeButton("<-");
@@ -88,12 +95,35 @@ public class CalculatorPanel extends JPanel{
 	public void makeButton(String term) {
 		Button button = new Button(term);
 		gridbag.setConstraints(button, c);
-		final String numbers = "0123456789.";
-		if(!term.equals("=")) {
+
+		if(term.equals("=")) {
 			button.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					terms.add(term);
+					calc.update(terms);
+					answerText.setText("= " + calc.calculate());
+				}
+			});
+		}
+		else if(term.equals("AC")) {
+			button.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					terms.clear();
+					calc.update(terms);
+					output.setText(calc.toString());
+				}
+			});
+		}
+		else if(term.equals("<-")) {
+			button.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if(terms.size() > 0) {
+						terms.remove(terms.size() - 1);
+					}
+					calc.update(terms);
+					output.setText(calc.toString());
 				}
 			});
 		}
@@ -102,9 +132,12 @@ public class CalculatorPanel extends JPanel{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					terms.add(term);
+					calc.update(terms);
+					output.setText(calc.toString());
 				}
 			});
 		}
+		button.setFont(CALCULATOR_FONT);
 		add(button);
 	}
 }
